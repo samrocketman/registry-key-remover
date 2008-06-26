@@ -1,5 +1,7 @@
 """This file contains classes for working with the Windows
-registry. """
+registry.
+
+Author: Michael Venable"""
 
 from _winreg import OpenKey, QueryValueEx
 
