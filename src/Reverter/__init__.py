@@ -1,8 +1,12 @@
 #Main driver for application
 #@author: Corey Fournier
 
+from EntryList.RegShotListReader import RegShotListReader
 
-filename = "/home/corey/workspace/HelloWorld/InstallRemove.txt"
-et = EntryList.RegShotListReader(fileName)
-for line in et:
+fileName = "/home/corey/workspace/HelloWorld/InstallRemove.txt"
+
+el = RegShotListReader(fileName)
+
+#el.getItem()
+for line in el:
         print line 
