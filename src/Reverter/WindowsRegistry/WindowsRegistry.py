@@ -40,7 +40,7 @@ class WindowsRegistry:
             keyHandle = _winreg.OpenKey( key.hive(), key.subKey() )
             value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
             return value
-        except Exception, e:
+        except EnvironmentError, e:
             raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
@@ -60,7 +60,7 @@ class WindowsRegistry:
         try:
             keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
             _winreg.DeleteKey(keyHandle, key.valueName())
-        except Exception, e:
+        except EnvironmentError, e:
             raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
@@ -80,7 +80,7 @@ class WindowsRegistry:
         try:
             keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
             _winreg.DeleteValue(keyHandle, key.valueName())
-        except Exception, e:
+        except EnvironmentError, e:
             raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
