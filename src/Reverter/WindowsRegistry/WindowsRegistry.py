@@ -174,4 +174,7 @@ class RegistryKey:
         "HKEY_CURRENT_USER\Console\CursorSize", then self.valueName() is
         "CursorSize."
         """
-        return self[ len(self)-1 ]
+        # if the length of this key is 1, then no value name exists, so
+        # return an empty string.  This is the equivalent of
+        # return (len(self) > 1) ? self[ len(self)-1 ] : ""
+        return (len(self) > 1) and self[ len(self)-1 ] or ""
