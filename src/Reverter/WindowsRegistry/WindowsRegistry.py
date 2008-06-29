@@ -5,23 +5,49 @@ Author: Michael Venable"""
 
 from _winreg import OpenKey, QueryValueEx
 
+#Define exceptions
+class WindowsRegistryException(Exception):
+    """Represents an error that has occurred while interacting
+    with the Windows registry."""
+    def __init__(self, message, source):
+        """Initializes this exception.  Includes a message describing
+        why the error occurred and a source exception."""
+        Exception.__init__(self, message)
+        self.source = source
+class CantOpenKeyException(WindowsRegistryException):
+    """Indicates a registry key could not be accessed."""
+    def __init__(self, message, source):
+        WindowsRegistryException.__init__(self, message, source)
+class CantRemoveKeyException(WindowsRegistryException):
+    """INDICATEs a registry key could not be deleted."""
+    def __init__(self, message, source):
+        WindowsRegistryException.__init__(self, message, source)
+
 class WindowsRegistry:
     """Abstraction of the Windows registry."""
 
     def getValue(self, key):
         """Retrieves the value data associated with the given
-        key and value name."""
-        keyHandle = OpenKey( key.hive(), key.subKey() );
-        value = QueryValueEx(keyHandle, key.valueName())
-        keyHandle.Close()
-        return value[0]
+        key and value name.  Throws a CantOpenKeyException if
+        the key does not exist or could not be accessed."""
+        try:
+            keyHandle = OpenKey( key.hive(), key.subKey() );
+            value = QueryValueEx(keyHandle, key.valueName())
+            keyHandle.Close()
+            return value[0]
+        except _winreg.EnvironmentError, e:
+            raise CantOpenKeyException("Unable to open the key " + key, e)
         
     def removeKey(self, key):
         """Permanently removes the specified key from the
         registry.  Throws an exception is the key does not
         exist or could not be removed."""
-        pass
+        raise Exception("This method is not implemented.")
 
+    def removeValue(self, key):
+        """Permanently removed the specified value from teh
+        registry."""
+        raise Exception("This method is not implemented.")
 
 class RegistryKey:
     """Represents an entire key and value name in the Windows
