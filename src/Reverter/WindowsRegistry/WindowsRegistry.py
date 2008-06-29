@@ -6,21 +6,6 @@ Author: Michael Venable
 
 import _winreg
 
-#Define exceptions
-class WindowsRegistryException(Exception):
-    """Represents an error that has occurred while interacting
-    with the Windows registry.
-    """
-    def __init__(self, message, source=None):
-        """Initializes this exception.
-
-        message -   Description of the error.
-        source -    Original exception that caused this error.  None
-                    if there is no originating exception.
-        """
-        Exception.__init__(self, message)
-        self.source = source
-
 #Define classes
 class WindowsRegistry:
     """Abstraction of the Windows registry."""
@@ -164,7 +149,7 @@ class RegistryKey:
         """Returns this key's subkey.  For example, if this key is
         "HKEY_CURRENT_USER\Console\Cursors\CursorSize," then self.subKey() is
         'Console\Cursors'.  If the key contains only two components, as in
-        "HKEY_CURRENT_USER\Console," then there is not subKey and this
+        "HKEY_CURRENT_USER\Console," then there is no subKey and this
         method returns an empty string.
         """
         return self.SEPARATOR.join( self[1: len(self)-1] )
@@ -178,3 +163,18 @@ class RegistryKey:
         # return an empty string.  This is the equivalent of
         # return (len(self) > 1) ? self[ len(self)-1 ] : ""
         return (len(self) > 1) and self[ len(self)-1 ] or ""
+        
+#Define exceptions
+class WindowsRegistryException(Exception):
+    """Represents an error that has occurred while interacting
+    with the Windows registry.
+    """
+    def __init__(self, message, source=None):
+        """Initializes this exception.
+
+        message -   Description of the error.
+        source -    Original exception that caused this error.  None
+                    if there is no originating exception.
+        """
+        Exception.__init__(self, message)
+        self.source = source        
