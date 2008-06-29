@@ -69,6 +69,18 @@ class RegistryKey:
         'Console'."""
         return self.keys[key]
 
+    def __len__(self):
+        """Returns the number of parts that make up this key.
+        For example, for the key "ROOT\aaa\bbb\ccc", len(self) is four."""
+        return len(self.keys)
+
+    def __setitem__(self, key, item):
+        """Sets a piece of this key.  See __getitem__ for an example."""
+        self.keys[key] = item
+
+    def __str__(self):
+        return self.makeFullKey()
+
     def hive(self):
         """Returns the hive of this key.  The hive is a constant
         defined in _winreg and can be one of _winreg.HKEY_CLASSES_ROOT,
@@ -85,18 +97,12 @@ class RegistryKey:
         elif self.hiveName() == "HKEY_CURRENT_CONFIG":
             return wreg.HKEY_CURRENT_CONFIG
         
-    def __len__(self):
-        """Returns the number of parts that make up this key.
-        For example, for the key "ROOT\aaa\bbb\ccc", len(self) is four."""
-        return len(self.keys)
-
-    def __setitem__(self, key, item):
-        """Sets a piece of this key.  See __getitem__ for an example."""
-        self.keys[key] = item
-
-    def __str__(self):
-        return self.makeFullKey()
-
+    def hiveName(self):
+        """Returns the name of the top-level key or hive.
+        For example, if this key is 'HKEY_CURRENT_USER\Console\CursorSize',
+        then self.hiveName() is 'HKEY_CURRENT_USER'."""
+        return self[0]
+    
     def makeFullKey(self):
         """Returns the full key as given to the init method."""
         return self.SEPARATOR.join(self.keys)
@@ -106,12 +112,6 @@ class RegistryKey:
         'HKEY_CURRENT_USER\Console\Cursors\CursorSize', then self.subKey() is
         'Console\Cursors'."""
         return self.SEPARATOR.join( self[1: len(self)-1] )
-
-    def hiveName(self):
-        """Returns the name of the top-level key or hive.
-        For example, if this key is 'HKEY_CURRENT_USER\Console\CursorSize',
-        then self.hiveName() is 'HKEY_CURRENT_USER'."""
-        return self[0];
     
     def valueName(self):
         """Returns this key's value name.  For example, if this key is
