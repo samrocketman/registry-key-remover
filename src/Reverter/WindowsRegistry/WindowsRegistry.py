@@ -6,7 +6,6 @@ Author: Michael Venable
 
 import _winreg
 
-
 #Define exceptions
 class WindowsRegistryException(Exception):
     """Represents an error that has occurred while interacting
@@ -39,8 +38,8 @@ class WindowsRegistry:
         keyHandle = None
         try:
             keyHandle = _winreg.OpenKey( key.hive(), key.subKey() )
-            value = _winreg.QueryValueEx(keyHandle, key.valueName())
-            return value[0]
+            value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
+            return value
         except Exception, e:
             raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
