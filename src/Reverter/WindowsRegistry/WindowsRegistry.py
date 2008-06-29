@@ -90,13 +90,16 @@ class RegistryKey:
         For example, for the key "ROOT\aaa\bbb\ccc", len(self) is four."""
         return len(self.keys)
 
-    def makeFullKey(self):
-        """Returns the full key as given to the init method."""
-        return self.SEPARATOR.join(self.keys)
-
     def __setitem__(self, key, item):
         """Sets a piece of this key.  See __getitem__ for an example."""
         self.keys[key] = item
+
+    def __str__(self):
+        return self.makeFullKey()
+
+    def makeFullKey(self):
+        """Returns the full key as given to the init method."""
+        return self.SEPARATOR.join(self.keys)
 
     def subKey(self):
         """Returns this key's subkey.  For example, if this key is
@@ -110,12 +113,6 @@ class RegistryKey:
         then self.hiveName() is 'HKEY_CURRENT_USER'."""
         return self[0];
     
-    def toString(self):
-        """String represention of this registry key.  The string
-        representation consist of the entire key, including key,
-        subkey, and value name."""
-        return self.makeFullKey()
-
     def valueName(self):
         """Returns this key's value name.  For example, if this key is
         'HKEY_CURRENT_USER\Console\CursorSize', then self.valueName() is
