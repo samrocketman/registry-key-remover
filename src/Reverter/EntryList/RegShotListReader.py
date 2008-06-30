@@ -7,6 +7,7 @@ class RegShotListReader:
     REGULAR_EXPRESSION =  "\:[0-9]{0,3}(.)+\n(.)+(.|\s|\n)*?[-]{33}"
     HEADERS_TO_REMOVE = 2
     TAIL_TO_REMOVE = 1
+    NEW_LINE = "\n"
     def __init__(self, fileName):
         self.fileName = fileName
         
@@ -28,8 +29,8 @@ class RegShotListReader:
         self.valuesArray = []
         
         #Put the values into an array
-        self.keysArray = keysAdded.split("\n")
-        self.valuesArray = valuesAdded.split("\n")
+        self.keysArray = keysAdded.split(NEW_LINE)
+        self.valuesArray = valuesAdded.split(NEW_LINE)
         
         #Get rid of the headers and the tail
         self.valuesArray = self.valuesArray[self.HEADERS_TO_REMOVE : len(self.valuesArray) - self.HEADERS_TO_REMOVE - self.TAIL_TO_REMOVE]
