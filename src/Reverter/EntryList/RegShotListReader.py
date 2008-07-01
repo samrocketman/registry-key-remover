@@ -8,6 +8,8 @@ class RegShotListReader:
     HEADERS_TO_REMOVE = 2
     TAIL_TO_REMOVE = 1
     NEW_LINE = "\n"
+    
+    """ Class contructor """
     def __init__(self, fileName):
         self.fileName = fileName
         
@@ -41,6 +43,7 @@ class RegShotListReader:
     def getKeys(self):
         return self.keysArray
         pass
+    
     """Gets all values"""
     def getValues(self):
         return self.valuesArray
