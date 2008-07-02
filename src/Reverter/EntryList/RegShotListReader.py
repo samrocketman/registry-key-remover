@@ -45,12 +45,16 @@ class RegShotListReader:
         
         self.keysArray = self.keysArray[self.HEADERS_TO_REMOVE : len(self.keysArray) - self.HEADERS_TO_REMOVE - self.TAIL_TO_REMOVE]
         
-    """Gets all keys"""
     def getKeys(self):
+        """Gets all keys
+            Returns an array of Registry Keys as a string
+        """
         return self.keysArray
         pass
     
-    """Gets all values"""
     def getValues(self):
+        """Gets all values
+            Returns an array of Registry Values as a string
+        """
         return self.valuesArray
         pass        
