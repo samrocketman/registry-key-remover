@@ -22,11 +22,12 @@ class WindowsRegistry:
         """
         keyHandle = None
         try:
-            keyHandle = _winreg.OpenKey( key.hive(), key.subKey() )
-            value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
-            return value
-        except EnvironmentError, e:
-            raise WindowsRegistryException("Unable to open the key " + str(key), e)
+              try:
+                  keyHandle = _winreg.OpenKey( key.hive(), key.subKey() )
+                  value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
+                  return value
+              except EnvironmentError, e:
+                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
@@ -43,10 +44,11 @@ class WindowsRegistry:
         """
         keyHandle = None
         try:
-            keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
-            _winreg.DeleteKey(keyHandle, key.valueName())
-        except EnvironmentError, e:
-            raise WindowsRegistryException("Unable to open the key " + str(key), e)
+              try:
+                  keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
+                  _winreg.DeleteKey(keyHandle, key.valueName())
+              except EnvironmentError, e:
+                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
@@ -63,10 +65,11 @@ class WindowsRegistry:
         """
         keyHandle = None
         try:
-            keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
-            _winreg.DeleteValue(keyHandle, key.valueName())
-        except EnvironmentError, e:
-            raise WindowsRegistryException("Unable to open the key " + str(key), e)
+              try:
+                  keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
+                  _winreg.DeleteValue(keyHandle, key.valueName())
+              except EnvironmentError, e:
+                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
