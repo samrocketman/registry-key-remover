@@ -11,8 +11,8 @@ class RegShotListReader:
     VALUES_ADDED = "Values added"
     KEYS_ADDED = "Keys added"
     REGULAR_EXPRESSION =  "\:[0-9]{0,4}(.)+\n(.)+(.|\s|\n)*?[-]{33}"
-    HEADERS_TO_REMOVE = 2
-    TAIL_TO_REMOVE = 1
+    HEADER_LINES_TO_REMOVE = 2
+    TAIL_LINES_TO_REMOVE = 2
     NEW_LINE = "\n"
     
     """ Class contructor """
@@ -40,21 +40,24 @@ class RegShotListReader:
         self.keysArray = keysAdded.split(self.NEW_LINE)
         self.valuesArray = valuesAdded.split(self.NEW_LINE)
         
+                
         #Get rid of the headers and the tail
-        self.valuesArray = self.valuesArray[self.HEADERS_TO_REMOVE : len(self.valuesArray) - self.HEADERS_TO_REMOVE - self.TAIL_TO_REMOVE]
+        self.valuesArray = self.valuesArray[self.HEADER_LINES_TO_REMOVE : len(self.valuesArray) - self.TAIL_LINES_TO_REMOVE]
         
-        self.keysArray = self.keysArray[self.HEADERS_TO_REMOVE : len(self.keysArray) - self.HEADERS_TO_REMOVE - self.TAIL_TO_REMOVE]
+        self.keysArray = self.keysArray[self.HEADER_LINES_TO_REMOVE : len(self.keysArray) - self.TAIL_LINES_TO_REMOVE]
+        
+        for line in self.keysArray:
+            print line + self.NEW_LINE
+        
         
     def getKeys(self):
         """Gets all keys
             Returns an array of Registry Keys as a string
         """
         return self.keysArray
-        pass
     
     def getValues(self):
         """Gets all values
             Returns an array of Registry Values as a string
         """
         return self.valuesArray
-        pass        
