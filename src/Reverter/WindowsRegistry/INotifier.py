@@ -1,7 +1,7 @@
 """
     Interface class that allows the Windows Registry class to notify it's caller 
     when events occur 
-    author: Corey Fournier
+    Author: Corey Fournier
 """
 class INotifier:
     def keyRemoved(self,key):
