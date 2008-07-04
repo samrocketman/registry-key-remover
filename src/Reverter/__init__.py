@@ -5,6 +5,7 @@
 from EntryList.RegShotListReader import RegShotListReader
 from WindowsRegistry.WindowsRegistry import WindowsRegistry
 from WindowsRegistry.WindowsRegistry import RegistryKey
+from WindowsRegistry.WindowsRegistry import WindowsRegistryException
 import sys
 
 TAB = "\t"
@@ -26,7 +27,11 @@ print "Processing all keys\n"
 for line in registryList.getKeys():
     print TAB + "Removing: " + line
     keyInstance = RegistryKey(line.strip())
-    registryInterface.removeKey(keyInstance)
+    try:
+        registryInterface.removeKey(keyInstance)
+        #pass
+    except WindowsRegistryException, e:
+        print e
 
 print NEW_LINE
 print "Processing all values\n"
@@ -34,7 +39,11 @@ print "Processing all values\n"
 for line in registryList.getValues():
     print TAB + "Removing: " + line
     keyInstance = RegistryKey(line.strip())
-    registryInterface.removeValue(keyInstance)
+    try:
+        registryInterface.removeValue(keyInstance)
+        #pass
+    except WindowsRegistryException, e:
+        print e
     
 print NEW_LINE    
 print "All done, Thanks for using Corey And Mike's Registry Reverter"
