@@ -9,6 +9,7 @@ import _winreg
 #Define classes
 class WindowsRegistry:
     """Abstraction of the Windows registry."""
+    MAX_SUB_KEYS_TO_SEARCH = 50
 
     def getValue(self, key):
         """Retrieves the value data associated with the given
@@ -27,10 +28,69 @@ class WindowsRegistry:
                   value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
                   return value
               except EnvironmentError, e:
-                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
+                  print e.source
+                  raise WindowsRegistryException("Unable to open the key '" + str(key) + "'", e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
+                
+    def removeKeyChildren(self, key):
+        """Permanently removes the specified key children from the
+        registry and all it's child values. 
+
+        key - Key to be removed. Example:
+              RegistryKey("HKEY_CURRENT_USER\\Control Panel")
+
+        Throws WindowsRegistryException if the key cannot be
+        deleted.
+        """
+        subKeys = self.getFirstLevelSubkeys(key)
+        
+        if len(subKeys) > 0 :
+            #Reverse the order so i can delete the children first
+            subKeys.reverse()
+            for subKey in subKeys:
+                #Make a recursive call.
+                self.removeKeyChildren(RegistryKey(subKey))
+                print "Removing: '" + subKey + "'"
+                self.removeKey(RegistryKey(subKey))
+        
+    def removeKeyCascade(self, key):
+        """Permanently removes the specified key from the
+        registry and all it's children values. 
+
+        key - Key to be removed. Example:
+              RegistryKey("HKEY_CURRENT_USER\\Control Panel")
+
+        Throws WindowsRegistryException if the key cannot be
+        deleted.
+        """
+        
+        #Call this first, because it does not remove it's self.
+        self.removeKeyChildren(key)
+        #This function removes the current key passed it.
+        self.removeKey(key)
+        
+    """ Gets all sub keys, but only on the first level for a given key
+        key - Example:
+              RegistryKey("HKEY_CURRENT_USER\\Control Panel")
+        Returns an array of sub keys, None when there are none.
+    """
+    def getFirstLevelSubkeys(self,key):
+        subKeyArray = []
+        keyHandle = None
+        
+        keyHandle = _winreg.OpenKey( key.hive(), key.subKey() + "\\" + key.valueName())
+        
+        for i in range(self.MAX_SUB_KEYS_TO_SEARCH):
+            try:
+                foundValue = _winreg.EnumKey(keyHandle,i)
+                keyPath = key.hiveName() + "\\" + key.subKey() + "\\" + key.valueName() + "\\" + foundValue
+                subKeyArray.append(keyPath)
+            except EnvironmentError, e: 
+                #There is no way to know how many keys there are so we suppress any Environment Errors
+                break
+        return subKeyArray
         
     def removeKey(self, key):
         """Permanently removes the specified key from the
@@ -48,7 +108,8 @@ class WindowsRegistry:
                   keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
                   _winreg.DeleteKey(keyHandle, key.valueName())
               except EnvironmentError, e:
-                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
+                  print e
+                  raise WindowsRegistryException("Unable to open the key '" + str(key) + "'", e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
@@ -69,7 +130,8 @@ class WindowsRegistry:
                   keyHandle = _winreg.OpenKey( key.hive(), key.subKey(), 0, _winreg.KEY_ALL_ACCESS )
                   _winreg.DeleteValue(keyHandle, key.valueName())
               except EnvironmentError, e:
-                  raise WindowsRegistryException("Unable to open the key " + str(key), e)
+                  print e
+                  raise WindowsRegistryException("Unable to open the key '" + str(key) + "'", e)
         finally:
             if keyHandle is not None:
                 keyHandle.Close()
