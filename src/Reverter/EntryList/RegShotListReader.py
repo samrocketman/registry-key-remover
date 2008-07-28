@@ -8,8 +8,11 @@ import os
 import re
 
 class RegShotListReader:
+    """Values Added Header used in the regshot file"""
     VALUES_ADDED = "Values added"
+    """Keys Added Header used in the regshot file"""
     KEYS_ADDED = "Keys added"
+    """Regular expression used to find the regshot keys or values"""
     REGULAR_EXPRESSION =  "\:[0-9]{0,4}(.)+\n(.)+(.|\s|\n)*?[-]{33}"
     HEADER_LINES_TO_REMOVE = 2
     TAIL_LINES_TO_REMOVE = 2
@@ -38,8 +41,7 @@ class RegShotListReader:
         
         #Put the values into an array
         self.keysArray = keysAdded.split(self.NEW_LINE)
-        self.valuesArray = valuesAdded.split(self.NEW_LINE)
-        
+        self.valuesArray = valuesAdded.split(self.NEW_LINE)        
                 
         #Get rid of the headers and the tail
         self.valuesArray = self.valuesArray[self.HEADER_LINES_TO_REMOVE : len(self.valuesArray) - self.TAIL_LINES_TO_REMOVE]
