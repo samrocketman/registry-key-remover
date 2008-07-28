@@ -2,6 +2,7 @@
 registry.
 
 Author: Michael Venable
+        Corey Fournier
 """
 
 import _winreg
