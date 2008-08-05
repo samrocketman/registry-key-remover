@@ -2,6 +2,8 @@
     It checks for valid input and sets public variables to the values given input.
 Author: Corey Fournier
 """
+from sys import exit
+
 class SwitchParser:
     """
     F - file
