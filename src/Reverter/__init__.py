@@ -15,6 +15,8 @@ NEW_LINE = "\n"
 FILE_NAME_ARGUMENT_POSITION = 1
 
 sp = SwitchParser(sys.argv)
+""" Exit if there is not file name. The class handles the error messages."""
+if sp.fileName == "" : exit()
 
 registryInterface = WindowsRegistry()
 registryList = RegShotListReader(sp.fileName)
