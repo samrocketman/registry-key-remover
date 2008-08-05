@@ -11,7 +11,10 @@ class SwitchParser:
     """File name of file passed in"""
     fileName = None
     """Delete with cascade is enabled if true/ false otherwise"""
-    deleteWithCascade = False    
+    deleteWithCascade = False
+    
+    TAB = "\t"
+    NEW_LINE = "\n"    
     
     """ Class constructor
         commandLineArguments - Arguments passed in at the command line
@@ -46,5 +49,5 @@ class SwitchParser:
                         self.deleteWithCascade = True
         
         if self.fileName == None :
-            print "File name as an argument is required with the flag -" + self.SWITCHES[0] + NEW_LINE
+            print "File name as an argument is required with the flag -" + self.SWITCHES[0] + self.NEW_LINE
             exit()
