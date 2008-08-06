@@ -27,33 +27,31 @@ if sp.deleteWithCascade :
         print TAB + "Removing: " + line
         keyInstance = RegistryKey(line.strip())
         try:
-            registryInterface.removeKeyCascade(keyInstance)
-            pass        
+            registryInterface.removeKeyCascade(keyInstance)      
+        except WindowsRegistryException, (errno, strerror):
+            """ Ignore the error because there is no telling were the cascade will be"""
+            if errno == 2 :
+                pass                                
+else :
+    print "Processing all keys\n"
+    for line in registryList.getKeys():
+        print TAB + "Removing: " + line
+        keyInstance = RegistryKey(line.strip())
+        try:
+            registryInterface.removeKey(keyInstance)
         except WindowsRegistryException, e:
             print e
-
-
-print "Processing all keys\n"
-for line in registryList.getKeys():
-    print TAB + "Removing: " + line
-    keyInstance = RegistryKey(line.strip())
-    try:
-        registryInterface.removeKey(keyInstance)
-        #pass
-    except WindowsRegistryException, e:
-        print e
-
-print NEW_LINE
-print "Processing all values\n"
-
-for line in registryList.getValues():
-    print TAB + "Removing: " + line
-    keyInstance = RegistryKey(line.strip())
-    try:
-        registryInterface.removeValue(keyInstance)
-        #pass
-    except WindowsRegistryException, e:
-        print e
+    
+    print NEW_LINE
+    print "Processing all values\n"
+    
+    for line in registryList.getValues():
+        print TAB + "Removing: " + line
+        keyInstance = RegistryKey(line.strip())
+        try:
+            registryInterface.removeValue(keyInstance)
+        except WindowsRegistryException, e:
+            print e
    
 print NEW_LINE    
 print "All done, Thanks for using Corey And Mike's Registry Reverter"
