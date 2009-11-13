@@ -8,10 +8,13 @@ class SwitchParser:
     """
     F - file
     C - cascade
+    N - NSIS Script Output
     """
-    SWITCHES = ["F","C"]
+    SWITCHES = ["F","C","N"]
     """File name of file passed in"""
     fileName = None
+    """NSIS output filename"""
+    nsisOutput = None
     """Delete with cascade is enabled if true/ false otherwise"""
     deleteWithCascade = False
     
@@ -30,6 +33,7 @@ class SwitchParser:
             print "You must provide arguments EX:"
             print "-" + self.SWITCHES[0] + " filename (regshot keys)"
             print "-" + self.SWITCHES[1] + " (delete with cascade)"
+            print "-" + self.SWITCHES[2] + " filename (NSIS Script Output)"
         
         """Clean the arguments up"""        
         for argument in commandLineArguments:
@@ -49,6 +53,10 @@ class SwitchParser:
                         self.fileName = argument 
                     elif self.SWITCHES[1] == switch: # Delete with cascade is selected
                         self.deleteWithCascade = True
+                    elif self.SWITCHES[2] == switch: #The next argument is a file
+                        argument = arguments[i + 1]
+                        self.nsisOutput = argument
+                        
         
         if self.fileName == None :
             print "File name as an argument is required with the flag -" + self.SWITCHES[0] + self.NEW_LINE
