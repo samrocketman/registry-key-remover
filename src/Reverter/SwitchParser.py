@@ -1,6 +1,7 @@
 """This file contains a class that parses the arguments passed into the application.
     It checks for valid input and sets public variables to the values given input.
 Author: Corey Fournier
+        Sam Gleske
 """
 from sys import exit
 

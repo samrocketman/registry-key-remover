@@ -3,6 +3,7 @@ registry.
 
 Author: Michael Venable
         Corey Fournier
+        Sam Gleske
 """
 
 import _winreg

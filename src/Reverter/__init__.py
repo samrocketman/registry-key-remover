@@ -1,6 +1,7 @@
 """
     Main driver for application
     Author: Corey Fournier
+            Sam Gleske
 """
 from EntryList.RegShotListReader import RegShotListReader
 from WindowsRegistry.WindowsRegistry import WindowsRegistry
