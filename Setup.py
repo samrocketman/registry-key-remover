@@ -6,6 +6,6 @@ setup(name="Registry Key Remover",
       version="0.1.42",
       description="Removes registry keys based on the snap shot provided by RegShot.",
       url="https://sourceforge.net/projects/registrykeyremo/",
-      author="coreyfournier, mpvenable",
+      author="coreyfournier, mpvenable, sag47",
       author_email="@users.sourceforge.net",
       console=['src/Reverter/__init__.py'])
