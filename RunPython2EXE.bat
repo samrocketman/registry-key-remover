@@ -1,1 +1,2 @@
-python setup.py install
+:: Create Executable
+python setup.py py2exe
