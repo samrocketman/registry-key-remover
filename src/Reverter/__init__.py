@@ -45,11 +45,13 @@ if sp.nsisOutput != '':
     f.write('SetCompressor /SOLID lzma' + NEW_LINE)
     f.write('SetCompressorDictSize 32' + NEW_LINE)
     f.write('SetDatablockOptimize On' + NEW_LINE)
+    f.write(NEW_LINE)
     f.write('Name "Reverter NSIS Script"' + NEW_LINE)
     f.write('OutFile "auto_revert.exe"' + NEW_LINE)
     f.write('InstallDir "$TEMP"' + NEW_LINE)
     f.write('Icon "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"' + NEW_LINE)
     f.write('BrandingText "RegShot Reverter"' + NEW_LINE)
+    f.write('ShowInstDetails show' + NEW_LINE)
     f.write(';SilentInstall silent' + NEW_LINE)
     f.write(NEW_LINE)
     

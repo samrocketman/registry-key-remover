@@ -1,4 +1,5 @@
 echo off
+title Sam's Autobuilding batch file
 cls
 REM Compile Executable using a batch file
 REM @author: Sam Gleske
@@ -15,6 +16,19 @@ REM 	You may need to add your python directory (where python.exe is located) to 
 %~d0
 cd %~dp0
 
+:: Version of software: MAJOR.MINOR.PATCHSET
+set VERSION=0.1.55
+
+:: Ask pesky version questions so you don't forget to update them
+echo Current MAJOR.MINOR.PATCHSET=%VERSION%
+echo Did you update the version number in the following files:
+set /p MessageUser="  RunPython2EXE.bat (0.1.PATCHSET) (y/n)?: "
+if /I "%MessageUser%" neq "y" Goto End
+set /p MessageUser="  NSIS\regshot_reverter.nsi (0.1.PATCHSET) (y/n)?: "
+if /I "%MessageUser%" neq "y" Goto End
+set /p MessageUser="  Setup.py (0.1.PATCHSET) (y/n)?: "
+if /I "%MessageUser%" neq "y" Goto End
+
 :: Compile extra modules
 python compile.py
 
@@ -25,7 +39,7 @@ python setup.py py2exe
 set zip=%~dp07za.exe
 set zipfile=%~dp0dist\library.zip
 cd src\Reverter
-dir /s /b | find /i ".pyc" | "%zip%" a -xr!*CVS* -xr!*.py "%zipfile%" 
+dir /s /b | find /i ".pyc" | "%zip%" a -tzip -xr!*CVS* -xr!*.py "%zipfile%" 
 
 :: Remove all compiled modules from source directories
 echo Removing all compiled modules from source directories
@@ -35,9 +49,25 @@ echo Removing unnecessary files from dist directory.
 cd %~dp0dist
 del /q *.pyd
 del /q w9xpopen.exe
+
+:: Put together the binaries
+copy __init__.exe reverter.exe
+del __init__.exe
+makensis /DPRODUCT_VERSION="%VERSION%" "..\NSIS\regshot_reverter.nsi"
+copy /y ..\README.txt .\
+copy /y ..\NSIS\license.rtf .\
+
+:: Prepare binary packages for upload to sourceforge
+mkdir ..\packages
+del ..\packages\regshot_reverter_i386*
+dir /s /b | "%zip%" a -tzip -xr!*CVS* ..\packages\regshot_reverter_i386_v%VERSION%.zip
+cd ..
+dir /s /b | "%zip%" a -tzip -xr!*CVS* -xr!*dist* -xr!*build* -xr!*packages* -xr!*.exe packages\regshot_reverter_i386_v%VERSION%_src.zip
+cls
+echo Build Complete if you had your environment set up correctly.
 echo.
-echo.
-echo.
-echo.
-echo "All done! __init__.exe should be located in the dist/ directory"
+echo There should be 2 packages in the packages/ directory:
+echo   regshot_reverter_i386_v%VERSION%.zip
+echo   regshot_reverter_i386_v%VERSION%_src.zip
 pause
+:End
