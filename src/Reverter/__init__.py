@@ -170,12 +170,20 @@ else :
     print "Processing all values\n"
     
     for line in registryList.getValues():
-        print TAB + "Removing: " + line
-        keyInstance = RegistryKey(line.strip())
-        try:
-            registryInterface.removeValue(keyInstance)
-        except WindowsRegistryException, e:
-            print e
+        if line.startswith("HKLM") :
+            print TAB + "Removing: " + line
+            keyInstance = RegistryKey(line.strip())
+            try:
+                registryInterface.removeValue(keyInstance)
+            except WindowsRegistryException, e:
+                print e
+        elif line.startswith("HKU") :
+            print TAB + "Removing: " + line
+            keyInstance = RegistryKey(line.strip())
+            try:
+                registryInterface.removeValue(keyInstance)
+            except WindowsRegistryException, e:
+                print e
    
 print NEW_LINE    
 print "All done, Thanks for using Corey And Mike's Registry Reverter."
