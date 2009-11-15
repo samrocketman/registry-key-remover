@@ -28,7 +28,13 @@ cd src\Reverter
 dir /s /b | find /i ".pyc" | "%zip%" a -xr!*CVS* -xr!*.py "%zipfile%" 
 
 :: Remove all compiled modules from source directories
-del /s *.pyc
+echo Removing all compiled modules from source directories
+del /q /s *.pyc
+:: Remove unnecessary files from binary dist directory
+echo Removing unnecessary files from dist directory.
+cd %~dp0dist
+del /q *.pyd
+del /q w9xpopen.exe
 echo.
 echo.
 echo.
