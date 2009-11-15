@@ -17,7 +17,7 @@ REM 	You may need to add your python directory (where python.exe is located) to 
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.55
+set VERSION=0.1.56
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%

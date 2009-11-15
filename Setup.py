@@ -3,7 +3,7 @@ import py2exe
 # Filled out required information for setup.py from http://docs.python.org/distutils/setupscript.html
 setup(name="Registry Key Remover",
       #Version = Major.Minor.PatchSet
-      version="0.1.55",
+      version="0.1.56",
       description="Removes registry keys based on the snap shot provided by RegShot.",
       url="https://sourceforge.net/projects/registrykeyremo/",
       author="coreyfournier, mpvenable, sag47",
