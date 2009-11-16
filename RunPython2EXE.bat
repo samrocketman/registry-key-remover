@@ -20,7 +20,7 @@ REM 		C:\Program Files\NSIS\ (NSIS 2.45 directory where makensis.exe is located)
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.57
+set VERSION=0.1.58
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%

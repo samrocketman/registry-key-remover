@@ -58,14 +58,14 @@ if sp.nsisOutput != '':
     """ Write and initialization function that avoids errors by allowing only once instance of the program and checking for dependencies """
     f.write('Function .onInit' + NEW_LINE)
     f.write('; Check to ensure all required dependencies are met by the program' + NEW_LINE)
-    f.write('  IfFileExists "$SYSDIR\taskkill.exe" +3' + NEW_LINE)
-    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning!\r\n$SYSDIR\taskkill.exe does not exist."' + NEW_LINE)
+    f.write('  IfFileExists "$SYSDIR\\taskkill.exe" +3' + NEW_LINE)
+    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\taskkill.exe does not exist."' + NEW_LINE)
     f.write('    Abort' + NEW_LINE)
-    f.write('  IfFileExists "$SYSDIR\regsvr32.exe" +3' + NEW_LINE)
-    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning!\r\n$SYSDIR\regsvr32.exe does not exist."' + NEW_LINE)
+    f.write('  IfFileExists "$SYSDIR\\regsvr32.exe" +3' + NEW_LINE)
+    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\regsvr32.exe does not exist."' + NEW_LINE)
     f.write('    Abort' + NEW_LINE)
-    f.write('  IfFileExists "$SYSDIR\net.exe" +3' + NEW_LINE)
-    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning!\r\n$SYSDIR\net.exe does not exist."' + NEW_LINE)
+    f.write('  IfFileExists "$SYSDIR\\net.exe" +3' + NEW_LINE)
+    f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\net.exe does not exist."' + NEW_LINE)
     f.write('    Abort' + NEW_LINE)
     f.write('; Check if already running' + NEW_LINE)
     f.write('; If so don\'t open another but bring to front' + NEW_LINE)
@@ -85,10 +85,12 @@ if sp.nsisOutput != '':
     f.write('    Abort' + NEW_LINE)
     f.write('  launch:' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
+    f.write(NEW_LINE)
     
     """ Generate commands to delete all registry key names/values """
     f.write('Function deleteValues' + NEW_LINE)
     f.write('; Delete all registry key names/values' + NEW_LINE)
+    f.write('  DetailPrint "Removing Registry Values..."' + NEW_LINE)
     for line in registryList.getValues():
         if line.startswith("HKLM") :
             root_key = line.split('\\',1)[0]
@@ -115,6 +117,7 @@ if sp.nsisOutput != '':
     """ Generate commands to delete all registry sub keys that were created """
     f.write('Function deleteKeys' + NEW_LINE)
     f.write('; Delete all registry Keys' + NEW_LINE)
+    f.write('  DetailPrint "Removing Registry Keys..."' + NEW_LINE)
     print "Services found at: "
     for line in registryList.getKeys():
         if "SYSTEM\\CurrentControlSet\\Services" in line :
@@ -168,7 +171,8 @@ if sp.nsisOutput != '':
     for line in services :
         f.write('  ReadRegStr $0 {0} "{1}" "DisplayName"'.format( line.split('\\',1)[0], line.split('\\',1)[1] ))
         f.write( NEW_LINE )
-        f.write('    StrCmp $0 "" +2' + NEW_LINE)
+        f.write('    StrCmp $0 "" +3' + NEW_LINE)
+        f.write('    DetailPrint "Stop Service: $0"' + NEW_LINE)
         f.write('    ExecWait "net stop $\\"$0$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
@@ -177,6 +181,7 @@ if sp.nsisOutput != '':
     f.write('Function killExecutables' + NEW_LINE)
     f.write('; Kill all executables' + NEW_LINE)
     for line in executables :
+        f.write('  DetailPrint "Kill EXE: ' + line + '"' + NEW_LINE)
         f.write('  ExecWait "taskkill /IM $\\"' + line + '$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
