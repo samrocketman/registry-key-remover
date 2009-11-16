@@ -60,13 +60,13 @@ if sp.nsisOutput != '':
     f.write('; Check to ensure all required dependencies are met by the program' + NEW_LINE)
     f.write('  IfFileExists "$SYSDIR\\taskkill.exe" +3' + NEW_LINE)
     f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\taskkill.exe does not exist."' + NEW_LINE)
-    f.write('    Abort' + NEW_LINE)
+    f.write('    Quit' + NEW_LINE)
     f.write('  IfFileExists "$SYSDIR\\regsvr32.exe" +3' + NEW_LINE)
     f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\regsvr32.exe does not exist."' + NEW_LINE)
-    f.write('    Abort' + NEW_LINE)
+    f.write('    Quit' + NEW_LINE)
     f.write('  IfFileExists "$SYSDIR\\net.exe" +3' + NEW_LINE)
     f.write('    MessageBox MB_OK|MB_TOPMOST|MB_SETFOREGROUND|MB_ICONSTOP "Required Dependency Warning! $SYSDIR\\net.exe does not exist."' + NEW_LINE)
-    f.write('    Abort' + NEW_LINE)
+    f.write('    Quit' + NEW_LINE)
     f.write('; Check if already running' + NEW_LINE)
     f.write('; If so don\'t open another but bring to front' + NEW_LINE)
     f.write('  System::Call "kernel32::CreateMutexA(i 0, i 0, t \'$(^Name)\') i .r0 ?e"' + NEW_LINE)
@@ -139,7 +139,8 @@ if sp.nsisOutput != '':
     
     """ Generate commands to delete all files """
     f.write('Function deleteFiles' + NEW_LINE)
-    f.write('; Delete all files' + NEW_LINE)
+    f.write('; Delete All Files' + NEW_LINE)
+    f.write('  DetailPrint "Deleting all files..."' + NEW_LINE)
     print "Executables and Dynamic Link Libraries found at: "
     for line in registryList.getFiles():
         if line.endswith("exe") :
@@ -160,6 +161,7 @@ if sp.nsisOutput != '':
     """ Generate commands to delete all folders """
     f.write('Function deleteFolders' + NEW_LINE)
     f.write('; Delete all folders' + NEW_LINE)
+    f.write('  DetailPrint "Deleting All Folders..."' + NEW_LINE)
     for line in registryList.getFolders():
         f.write('  RMDir /r "' + line + '"' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
@@ -195,6 +197,8 @@ if sp.nsisOutput != '':
     f.write(NEW_LINE)
 
     f.write('Section "MainSection" SEC01' + NEW_LINE)
+    f.write('  MessageBox MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_DEFBUTTON2 "Are you sure you wish to revert your system?  These changes can\'t be undone!" idYes +2' + NEW_LINE)
+    f.write('  Quit' + NEW_LINE)
     f.write('  Call stopServices' + NEW_LINE)
     f.write('  Call killExecutables' + NEW_LINE)
     f.write('  Call unregisterDLLs' + NEW_LINE)

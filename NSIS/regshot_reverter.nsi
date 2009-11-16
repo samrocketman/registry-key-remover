@@ -27,7 +27,7 @@ Var NSIS_NSI
 !define PRODUCT_NAME "Registry Key Remover"
 !define EXE_NAME "regshot_reverter.exe"
 !ifndef PRODUCT_VERSION
-  !define PRODUCT_VERSION "0.1.58"
+  !define PRODUCT_VERSION "0.1.59"
 !endif
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -44,7 +44,7 @@ VIProductVersion "${PRODUCT_VERSION}.0"
 VIAddVersionKey /LANG=1033 "ProductName" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey /LANG=1033 "CompanyName" "${PRODUCT_NAME} Project"
 VIAddVersionKey /LANG=1033 "LegalCopyright" "Copyright (C) 2009 ${PRODUCT_NAME} Project"
-VIAddVersionKey /LANG=1033 "FileDescription" "${PRODUCT_NAME}"
+VIAddVersionKey /LANG=1033 "FileDescription" "Removes registry keys based on the snap shot provided by RegShot."
 VIAddVersionKey /LANG=1033 "FileVersion" "${PRODUCT_VERSION}"
 VIAddVersionKey /LANG=1033 "OriginalFilename" "${EXE_NAME}"
 
@@ -85,6 +85,9 @@ Function ValidateSettings
 
 ; Path to the NSIS File
   ReadINIStr $NSIS_NSI "$PLUGINSDIR\custom.ini" "Field 4" "State"
+  IfFileExists $NSIS_NSI +1 +3
+  MessageBox MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_DEFBUTTON2 "NSIS File: $NSIS_NSI$\r$\nAlready exists! Do you wish to overwrite?" idYes +2
+  Abort
 FunctionEnd
 
 Section "MainSection" SEC01

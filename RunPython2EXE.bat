@@ -20,7 +20,7 @@ REM 		C:\Program Files\NSIS\ (NSIS 2.45 directory where makensis.exe is located)
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.58
+set VERSION=0.1.59
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%
@@ -72,5 +72,8 @@ echo.
 echo There should be 2 packages in the packages/ directory:
 echo   regshot_reverter_i386_v%VERSION%.zip
 echo   regshot_reverter_i386_v%VERSION%_src.zip
+echo.
+echo Binaries that were built are located in the dist/ directory
+echo.
 pause
 :End
