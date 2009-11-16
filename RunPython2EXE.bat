@@ -7,9 +7,12 @@ REM @author: Sam Gleske
 REM Here are the things you need to compile this successfully:
 REM 	Python 2.6 (latest)
 REM 	py2exe for Python 2.6 (latest)
-REM 	7-Zip command line utilitiy (make sure 7za.exe is in the same directory as this batch file!)
+REM 	7-Zip command line utilitiy (make sure 7za.exe is extracted in the same directory as this batch file!)
+REM 	NSIS 2.45
 REM Additional notes:
-REM 	You may need to add your python directory (where python.exe is located) to your PATH environment variable.
+REM 	You will need to add entries to your PATH environment variable (these are examples, not the same on all systems):
+REM 		C:\python26\ (Python 2.6 directory where python.exe is located)
+REM 		C:\Program Files\NSIS\ (NSIS 2.45 directory where makensis.exe is located)
 
 
 :: No matter where the batch file is run, run it as if being run from the same dir as RunPython2EXE.bat
@@ -17,7 +20,7 @@ REM 	You may need to add your python directory (where python.exe is located) to 
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.56
+set VERSION=0.1.57
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%
