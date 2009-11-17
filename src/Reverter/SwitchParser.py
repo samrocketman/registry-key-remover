@@ -60,5 +60,5 @@ class SwitchParser:
                         
         
         if self.fileName == None :
-            print "File name as an argument is required with the flag -" + self.SWITCHES[0] + self.NEW_LINE
+            print "File name as an argument must follow the flags -F or -N" + self.NEW_LINE
             exit()
