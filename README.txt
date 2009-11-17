@@ -83,6 +83,8 @@ and then either 1.) Generates an NSIS script that can be compiled by the
 user with NSIS or 2.) Reverts the changes for you without user having to 
 compile anything.*
 
+*Please note: Only the NSIS script Generating is fully working correctly.
+
 
 What is NSIS?
 Please refer to http://nsis.sourceforge.net/ for more information.

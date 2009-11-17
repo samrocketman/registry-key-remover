@@ -4,12 +4,9 @@
             Sam Gleske
 """
 from EntryList.RegShotListReader import RegShotListReader
-from WindowsRegistry.WindowsRegistry import WindowsRegistry
-from WindowsRegistry.WindowsRegistry import RegistryKey
-from WindowsRegistry.WindowsRegistry import WindowsRegistryException
+from WindowsRegistry.WindowsRegistry import WindowsRegistry, RegistryKey, WindowsRegistryException
 from SwitchParser import *
-import sys
-import re
+import sys, re
 
 
 TAB = "\t"
@@ -24,7 +21,7 @@ registryInterface = WindowsRegistry()
 registryList = RegShotListReader(sp.fileName)
 
 """ If user gave -N FILE_OUTPUT_NAME then generate an NSIS script instead of removing entries """
-if sp.nsisOutput != '':
+if sp.nsisOutput != None:
     executables = []
     services = []
     service_keys = []

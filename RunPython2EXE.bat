@@ -7,6 +7,7 @@ REM @author: Sam Gleske
 REM Here are the things you need to compile this successfully:
 REM 	Python 2.6 (latest)
 REM 	py2exe for Python 2.6 (latest)
+REM 	pywin32 for Python 2.6 (latest)
 REM 	7-Zip command line utilitiy (make sure 7za.exe is extracted in the same directory as this batch file!)
 REM 	NSIS 2.45
 REM Additional notes:
@@ -20,7 +21,7 @@ REM 		C:\Program Files\NSIS\ (NSIS 2.45 directory where makensis.exe is located)
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.59
+set VERSION=0.1.60
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%
