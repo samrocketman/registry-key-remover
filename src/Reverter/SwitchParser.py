@@ -4,19 +4,21 @@ Author: Corey Fournier
         Sam Gleske
 """
 from sys import exit
-import os.path
 
 class SwitchParser:
     """
     F - file
     C - cascade
     N - NSIS Script Output
+    Q - Suppress overwrite prompt for NSIS Script Output
     """
-    SWITCHES = ["F","C","N"]
+    SWITCHES = ["F","C","N","Q"]
     """File name of file passed in"""
     fileName = None
     """NSIS output filename"""
     nsisOutput = None
+    """Do not prompt for file overwrites"""
+    quietMode = False
     """Delete with cascade is enabled if true/ false otherwise"""
     deleteWithCascade = False
     

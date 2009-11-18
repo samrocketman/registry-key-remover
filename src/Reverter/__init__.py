@@ -180,7 +180,7 @@ if sp.nsisOutput != None:
         f.write( NEW_LINE )
         f.write('    StrCmp $0 "" +3' + NEW_LINE)
         f.write('    DetailPrint "Stop Service: $0"' + NEW_LINE)
-        f.write('    ExecWait "net stop $\\"$0$\\""' + NEW_LINE)
+        f.write('    nsExec::ExecToLog "net stop $\\"$0$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
     
@@ -189,7 +189,7 @@ if sp.nsisOutput != None:
     f.write('; Kill all executables' + NEW_LINE)
     for line in executables :
         f.write('  DetailPrint "Kill EXE: ' + line + '"' + NEW_LINE)
-        f.write('  ExecWait "taskkill /IM $\\"' + line + '$\\""' + NEW_LINE)
+        f.write('  nsExec::ExecToLog "taskkill /IM $\\"' + line + '$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
     
@@ -197,7 +197,7 @@ if sp.nsisOutput != None:
     f.write('Function unregisterDLLs' + NEW_LINE)
     f.write('; unregister all Dynamic Link Libraries' + NEW_LINE)
     for line in registeredDLLs :
-        f.write('  ExecWait "regsvr32 /u /s $\\"' + line + '$\\""' + NEW_LINE)
+        f.write('  nsExec::ExecToLog "regsvr32 /u /s $\\"' + line + '$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
 
