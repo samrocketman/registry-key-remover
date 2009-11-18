@@ -4,6 +4,7 @@ Author: Corey Fournier
         Sam Gleske
 """
 from sys import exit
+import os.path
 
 class SwitchParser:
     """
@@ -31,10 +32,7 @@ class SwitchParser:
         argument = None
         
         if len(commandLineArguments) == 1:
-            print "You must provide arguments EX:"
-            print "-" + self.SWITCHES[0] + " filename (regshot keys)"
-            print "-" + self.SWITCHES[1] + " (delete with cascade)"
-            print "-" + self.SWITCHES[2] + " filename (NSIS Script Output)"
+            self.syntaxErr()
         
         """Clean the arguments up"""        
         for argument in commandLineArguments:
@@ -45,20 +43,51 @@ class SwitchParser:
         """Now look at all of the arguments to see if any match"""
         for i in range(len(arguments)):
             argument = arguments[i]
+            
+            #display help documentation
+            if "/?" in argument :
+                self.showhelp()
+            elif "--help" in argument :
+                self.showhelp()
+            elif "-help" in argument :
+                self.showhelp()
+
             #see if the current argument is a switch indicator
-            if argument.find("-",0,1)  > -1 :
-                switch = argument.upper()[1:2]
-                if self.SWITCHES.count(switch) > 0 :
-                    if self.SWITCHES[0] == switch: #The next argument is a file
-                        argument = arguments[i + 1]
-                        self.fileName = argument 
-                    elif self.SWITCHES[1] == switch: # Delete with cascade is selected
-                        self.deleteWithCascade = True
-                    elif self.SWITCHES[2] == switch: #The next argument is a file
-                        argument = arguments[i + 1]
-                        self.nsisOutput = argument
-                        
-        
-        if self.fileName == None :
-            print "File name as an argument must follow the flags -F or -N" + self.NEW_LINE
-            exit()
+            try:
+                if argument.find("-",0,1)  > -1 :
+                    switch = argument.upper()[1:2]
+                    if self.SWITCHES.count(switch) > 0 :
+                        if self.SWITCHES[0] == switch: #The next argument is a file
+                            argument = arguments[i + 1]
+                            self.fileName = argument 
+                        elif self.SWITCHES[1] == switch: # Delete with cascade is selected
+                            self.deleteWithCascade = True
+                        elif self.SWITCHES[2] == switch: #The next argument is a file
+                            argument = arguments[i + 1]
+                            if argument != '' :
+                                self.nsisOutput = argument
+            except:
+                self.syntaxErr()
+    def showhelp(self):
+        print "Uses a RegShot Plain TXT compare log to stop services, kill executables, and   "
+        print "unregister DLL files before doing a file and registry entry removal to ensure  "
+        print "the cleanest possible removal of software."
+        print ""
+        print "REVERTER [-F inFile] [-N outFile] [-C]"
+        print ""
+        print "  /?" + self.TAB + self.TAB + "Shows this help dialog.  Also -help and --help work."
+        print "  -C" + self.TAB + self.TAB + "Delete registry entries with cascade"
+        print "  -F" + self.TAB + self.TAB + "Run automatic file/folder/registry removal using inFile as   "
+        print self.TAB + self.TAB +          "input unless -N switch is used"
+        print "  inFile" + self.TAB +        "Specifies the RegShot file to be read.  Must be Plain TXT!   "
+        print "  -N" + self.TAB + self.TAB + "Read -F as input and generate an NSIS script using outFile as"
+        print self.TAB + self.TAB +          "output which can be compiled and distributed."
+        print "  outFile" + self.TAB +       "Specifies the path of NSIS script file (*.nsi) which will be "
+        print self.TAB + self.TAB +          "generated."
+        print ""
+        print "Created by: Corey Fournier, Michael Venable, and Sam Gleske"
+        print "http://sourceforge.net/projects/registrykeyremo"
+        exit()
+    def syntaxErr(self):
+        print "The syntax of the command is incorrect.  Try COMMAND /?."
+        exit()

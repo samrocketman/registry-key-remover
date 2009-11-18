@@ -27,7 +27,7 @@ Var NSIS_NSI
 !define PRODUCT_NAME "Registry Key Remover"
 !define EXE_NAME "regshot_reverter.exe"
 !ifndef PRODUCT_VERSION
-  !define PRODUCT_VERSION "0.1.60"
+  !define PRODUCT_VERSION "0.1.62"
 !endif
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
