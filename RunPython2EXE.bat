@@ -21,15 +21,17 @@ REM 		C:\Program Files\NSIS\ (NSIS 2.45 directory where makensis.exe is located)
 cd %~dp0
 
 :: Version of software: MAJOR.MINOR.PATCHSET
-set VERSION=0.1.62
+set VERSION=0.1.64
 
 :: Ask pesky version questions so you don't forget to update them
 echo Current MAJOR.MINOR.PATCHSET=%VERSION%
 echo Did you update the version number in the following files:
 set /p MessageUser="  RunPython2EXE.bat (0.1.PATCHSET) (y/n)?: "
 if /I "%MessageUser%" neq "y" Goto End
+set MessageUser=""
 set /p MessageUser="  NSIS\regshot_reverter.nsi (0.1.PATCHSET) (y/n)?: "
 if /I "%MessageUser%" neq "y" Goto End
+set MessageUser=""
 set /p MessageUser="  Setup.py (0.1.PATCHSET) (y/n)?: "
 if /I "%MessageUser%" neq "y" Goto End
 

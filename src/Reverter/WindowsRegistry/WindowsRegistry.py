@@ -30,7 +30,6 @@ class WindowsRegistry:
                 value, type = _winreg.QueryValueEx(keyHandle, key.valueName())
                 return value
             except EnvironmentError, e:
-                print e.source
                 raise WindowsRegistryException("Unable to open the key '" + str(key) + "'", e)
         finally:
             if keyHandle is not None:
@@ -80,8 +79,6 @@ class WindowsRegistry:
     """
     def getFirstLevelSubkeys(self,key):
         subKeyArray = []
-        keyHandle = None
-        
         keyHandle = _winreg.OpenKey( key.hive(), key.subKey() + "\\" + key.valueName())
         
         for i in range(self.MAX_SUB_KEYS_TO_SEARCH):
@@ -89,7 +86,7 @@ class WindowsRegistry:
                 foundValue = _winreg.EnumKey(keyHandle,i)
                 keyPath = key.hiveName() + "\\" + key.subKey() + "\\" + key.valueName() + "\\" + foundValue
                 subKeyArray.append(keyPath)
-            except EnvironmentError, e: 
+            except EnvironmentError: 
                 #There is no way to know how many keys there are so we suppress any Environment Errors
                 break
         return subKeyArray

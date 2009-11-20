@@ -6,7 +6,8 @@
 from EntryList.RegShotListReader import RegShotListReader
 from WindowsRegistry.WindowsRegistry import WindowsRegistry, RegistryKey, WindowsRegistryException
 from SwitchParser import *
-import sys, re
+from WindowsServices.WindowsServices import *
+import sys, re, os.path, time, win32serviceutil
 
 TAB = "\t"
 NEW_LINE = "\n"
@@ -25,12 +26,27 @@ except IOError:
 except:
     print sp.syntaxErr()
 
+# Initialize variables for stopping services, killing executables, and unregistering DLLs
+executables = []
+services = []
+service_keys = []
+
+for line in registryList.getFiles():
+    line = line.strip()
+    if line.endswith("exe") :
+        i = 0
+        for temp in line.split('\\') :
+            i = i + 1
+        executables.append(line.split('\\')[i-1])
+
 """ If user gave -N FILE_OUTPUT_NAME then generate an NSIS script instead of removing entries """
 if sp.nsisOutput != None:
-    executables = []
-    services = []
-    service_keys = []
-    registeredDLLs = []
+    if os.path.isfile(sp.nsisOutput) :
+        if not sp.quietMode :
+            answer=raw_input("It appears your NSIS file already exists!" + NEW_LINE + "Do you want to overwrite (Y/N)?: ")
+            if answer.upper() not in ('Y','YE','YES') :
+                print "User aborted command!"
+                exit()
     try:
         f = open(sp.nsisOutput, 'w')
     except:
@@ -96,17 +112,10 @@ if sp.nsisOutput != None:
     f.write('Function deleteValues' + NEW_LINE)
     f.write('; Delete all registry key names/values' + NEW_LINE)
     f.write('  DetailPrint "Removing Registry Values..."' + NEW_LINE)
+    
+    # Get all of the Registry values for processing
     for line in registryList.getValues():
-        if line.startswith("HKLM") :
-            root_key = line.split('\\',1)[0]
-            str1 = line.split(': ')[0]
-            p = re.compile("[A-Z]:+")
-            str2 = p.split(str1.split('\\',1)[1])[0];
-            str3 = str2.split(":")[0]
-            sub_key = str3.rsplit('\\',1)[0]
-            key_name = str1.split(sub_key + '\\')[1]
-            f.write('  DeleteRegValue {0} "{1}" "{2}"'.format( root_key, sub_key, key_name ) + NEW_LINE)
-        elif line.startswith("HKU") :
+        if line.startswith("HKLM") or line.startswith("HKU") :
             root_key = line.split('\\',1)[0]
             str1 = line.split(': ')[0]
             p = re.compile("[A-Z]:+")
@@ -146,18 +155,7 @@ if sp.nsisOutput != None:
     f.write('Function deleteFiles' + NEW_LINE)
     f.write('; Delete All Files' + NEW_LINE)
     f.write('  DetailPrint "Deleting all files..."' + NEW_LINE)
-    print "Executables and Dynamic Link Libraries found at: "
-    for line in registryList.getFiles():
-        if line.endswith("exe") :
-            i = 0
-            for temp in line.split('\\') :
-                i = i + 1
-            print "  " + line
-            executables.append(line.split('\\')[i-1])
-        elif line.endswith("dll") :
-            print "  " + line
-            registeredDLLs.append(line)
-        f.write('  Delete "' + line + '"' + NEW_LINE)
+    f.write('  Delete "' + line + '"' + NEW_LINE)
     if len(executables) == 0 :
         print "  None"
     f.write('FunctionEnd' + NEW_LINE)
@@ -180,7 +178,7 @@ if sp.nsisOutput != None:
         f.write( NEW_LINE )
         f.write('    StrCmp $0 "" +3' + NEW_LINE)
         f.write('    DetailPrint "Stop Service: $0"' + NEW_LINE)
-        f.write('    nsExec::ExecToLog "net stop $\\"$0$\\""' + NEW_LINE)
+        f.write('    ExecWait "net stop $\\"$0$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
     
@@ -190,14 +188,6 @@ if sp.nsisOutput != None:
     for line in executables :
         f.write('  DetailPrint "Kill EXE: ' + line + '"' + NEW_LINE)
         f.write('  nsExec::ExecToLog "taskkill /IM $\\"' + line + '$\\""' + NEW_LINE)
-    f.write('FunctionEnd' + NEW_LINE)
-    f.write(NEW_LINE)
-    
-    """ Generate commands to unregister all Dynamic Link Libraries (*.dll) """
-    f.write('Function unregisterDLLs' + NEW_LINE)
-    f.write('; unregister all Dynamic Link Libraries' + NEW_LINE)
-    for line in registeredDLLs :
-        f.write('  nsExec::ExecToLog "regsvr32 /u /s $\\"' + line + '$\\""' + NEW_LINE)
     f.write('FunctionEnd' + NEW_LINE)
     f.write(NEW_LINE)
 
@@ -219,6 +209,11 @@ if sp.nsisOutput != None:
     f.write('SectionEnd' + NEW_LINE)
     f.close()
 elif sp.deleteWithCascade :
+    if not sp.quietMode :
+        answer=raw_input("This action is permanent!" + NEW_LINE + "Do you want to continue (Y/N)?: ")
+        if answer.upper() not in ('Y','YE','YES') :
+            print "User aborted command!"
+            exit()
     print "Deleting all keys with cascade\n"
     for line in registryList.getKeys():
         print TAB + "Removing: " + line
@@ -231,33 +226,48 @@ elif sp.deleteWithCascade :
                 pass   
 
 else : 
-    print "Processing all keys\n"
+    if not sp.quietMode :
+        answer=raw_input("This action is permanent!" + NEW_LINE + "Do you want to continue (Y/N)?: ")
+        if answer.upper() not in ('Y','YE','YES') :
+            print "User aborted command!"
+            exit()
+            
+    print "Attempting to stop services..."
     for line in registryList.getKeys():
-        print TAB + "Removing: " + line
-        keyInstance = RegistryKey(line.strip())
-        try:
-            registryInterface.removeKey(keyInstance)
-        except WindowsRegistryException, e:
-            print e
-    
-    print NEW_LINE
-    print "Processing all values\n"
-    
-    for line in registryList.getValues():
-        if line.startswith("HKLM") :
-            print TAB + "Removing: " + line
-            keyInstance = RegistryKey(line.strip())
+        if "SYSTEM\\CurrentControlSet\\Services" in line and len(line.split('\\')) == 5:
+            line = line.strip()
             try:
-                registryInterface.removeValue(keyInstance)
-            except WindowsRegistryException, e:
-                print e
-        elif line.startswith("HKU") :
-            print TAB + "Removing: " + line
-            keyInstance = RegistryKey(line.strip())
-            try:
-                registryInterface.removeValue(keyInstance)
-            except WindowsRegistryException, e:
-                print e
+                keyInstance = RegistryKey("HKEY_LOCAL_MACHINE\\" + line.split("\\",1)[1] + "\\DisplayName")
+                serviceName = registryInterface.getValue(keyInstance)
+                print serviceName
+                service_info(serviceName, 'remove')
+                time.sleep(0.5)
+            except WindowsRegistryException :
+                break
+    
+    
+    # Process values before keys to reduce error output.
+#    print "Processing all values\n"
+#    for line in registryList.getValues():
+#        if line.startswith("HKLM") or line.startswith("HKU") :
+#            print TAB + "Removing: " + line
+#            keyInstance = RegistryKey(line.strip())
+#            try:
+#                registryInterface.removeValue(keyInstance)
+#            except WindowsRegistryException, e:
+#                print e
+#    
+#    print NEW_LINE
+    
+    # Process keys
+#    print "Processing all keys\n"
+#    for line in registryList.getKeys():
+#        print TAB + "Removing: " + line
+#        keyInstance = RegistryKey(line.strip())
+#        try:
+#            registryInterface.removeKey(keyInstance)
+#        except WindowsRegistryException, e:
+#            print e
    
 print NEW_LINE    
 print "All done, Thanks for using Corey And Mike's Registry Reverter."

@@ -59,15 +59,16 @@ class SwitchParser:
                 if argument.find("-",0,1)  > -1 :
                     switch = argument.upper()[1:2]
                     if self.SWITCHES.count(switch) > 0 :
-                        if self.SWITCHES[0] == switch: #The next argument is a file
+                        if self.SWITCHES[0] == switch: #-F inFile
                             argument = arguments[i + 1]
-                            self.fileName = argument 
-                        elif self.SWITCHES[1] == switch: # Delete with cascade is selected
+                            self.fileName = argument
+                        elif self.SWITCHES[1] == switch: #-C
                             self.deleteWithCascade = True
-                        elif self.SWITCHES[2] == switch: #The next argument is a file
+                        elif self.SWITCHES[2] == switch: #-N outFile
                             argument = arguments[i + 1]
-                            if argument != '' :
-                                self.nsisOutput = argument
+                            self.nsisOutput = argument
+                        elif self.SWITCHES[3] == switch: #-Q
+                            self.quietMode = True
             except:
                 self.syntaxErr()
     def showhelp(self):

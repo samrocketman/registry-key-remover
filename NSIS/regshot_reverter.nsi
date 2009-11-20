@@ -27,7 +27,7 @@ Var NSIS_NSI
 !define PRODUCT_NAME "Registry Key Remover"
 !define EXE_NAME "regshot_reverter.exe"
 !ifndef PRODUCT_VERSION
-  !define PRODUCT_VERSION "0.1.62"
+  !define PRODUCT_VERSION "0.1.64"
 !endif
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -97,7 +97,7 @@ Section "MainSection" SEC01
   File "..\dist\library.zip"
   File "..\dist\reverter.exe"
   Var /GLOBAL reverter
-  StrCpy $reverter "$\"$INSTDIR\reverter.exe$\" -F $\"$REGSHOT_TXT$\" -N $\"$NSIS_NSI$\""
+  StrCpy $reverter "$\"$INSTDIR\reverter.exe$\" -F $\"$REGSHOT_TXT$\" -N $\"$NSIS_NSI$\" -Q"
   DetailPrint "Executing: $reverter"
   nsExec::ExecToLog $reverter
   RmDir /r "$INSTDIR"
